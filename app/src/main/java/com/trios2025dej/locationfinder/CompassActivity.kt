@@ -36,6 +36,13 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
         enableEdgeToEdge()
         setContentView(R.layout.activity_compass)
 
+        val toolbar =
+            findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         bearingText =
             findViewById(R.id.bearingText)
 
@@ -60,6 +67,13 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+
+        onBackPressedDispatcher.onBackPressed()
+
+        return true
     }
 
     override fun onResume() {
