@@ -11,6 +11,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.widget.TextView
 import kotlin.math.roundToInt
+import android.widget.ImageView
 
 class CompassActivity : AppCompatActivity(), SensorEventListener {
 
@@ -19,6 +20,7 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
     private var accelerometer: Sensor? = null
     private var magneticField: Sensor? = null
 
+    private lateinit var compassImage: ImageView
     private lateinit var bearingText: TextView
     private lateinit var directionText: TextView
 
@@ -42,6 +44,9 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        compassImage =
+            findViewById(R.id.compassImage)
 
         bearingText =
             findViewById(R.id.bearingText)
@@ -166,6 +171,9 @@ class CompassActivity : AppCompatActivity(), SensorEventListener {
 
         directionText.text =
             getDirection(roundedBearing)
+
+        compassImage.rotation =
+            -bearing.toFloat()
     }
 
     private fun getDirection(
