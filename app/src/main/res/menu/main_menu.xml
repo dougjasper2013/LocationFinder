@@ -7,4 +7,9 @@
         android:title="Compass"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_live_location"
+        android:title="Live Location"
+        app:showAsAction="never" />
+
 </menu>

@@ -101,6 +101,16 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_live_location -> {
+
+                val intent =
+                    Intent(this, LiveLocationActivity::class.java)
+
+                startActivity(intent)
+
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
