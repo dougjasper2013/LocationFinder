@@ -21,6 +21,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import java.util.Locale
+import android.annotation.SuppressLint
+import org.osmdroid.config.Configuration
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+
 
 class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
