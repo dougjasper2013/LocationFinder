@@ -12,4 +12,9 @@
         android:title="Live Location"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_map"
+        android:title="Map"
+        app:showAsAction="never" />
+
 </menu>

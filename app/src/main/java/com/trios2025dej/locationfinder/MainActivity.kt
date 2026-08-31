@@ -111,6 +111,16 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_map -> {
+
+                val intent =
+                    Intent(this, MapActivity::class.java)
+
+                startActivity(intent)
+
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
