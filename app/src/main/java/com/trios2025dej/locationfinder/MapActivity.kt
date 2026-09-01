@@ -48,7 +48,21 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        Configuration.getInstance().userAgentValue = packageName
+
         setContentView(R.layout.activity_map)
+
+        mapView = findViewById(R.id.mapView)
+        statusText = findViewById(R.id.statusText)
+
+        mapView.setMultiTouchControls(true)
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        setupLocationCallback()
+
+        checkLocationPermission()
 
         val toolbar =
             findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
