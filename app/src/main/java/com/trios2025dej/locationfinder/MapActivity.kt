@@ -29,6 +29,22 @@ import org.osmdroid.views.overlay.Marker
 
 
 class MapActivity : AppCompatActivity() {
+
+    private lateinit var mapView: MapView
+    private lateinit var statusText: TextView
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var locationCallback: LocationCallback
+
+    private var locationMarker: Marker? = null
+
+    private var firstLocation = true
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST = 100
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
