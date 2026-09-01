@@ -26,6 +26,8 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import androidx.core.app.ActivityCompat
+
 
 
 class MapActivity : AppCompatActivity() {
@@ -76,6 +78,62 @@ class MapActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun checkLocationPermission() {
+        if (
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST
+            )
+
+        } else {
+
+            startLocationUpdates()
+
+        }
+    }
+
+    private fun setupLocationCallback() {
+
+        locationCallback = object : LocationCallback() {
+
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations) {
+                    updateMapLocation(location)
+                }
+            }
+
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+
+        val locationRequest =
+            LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                3000
+            ).apply {
+                setMinUpdateIntervalMillis(1000)
+            }.build()
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            mainLooper
+        )
+
+    }
+
+    private fun updateMapLocation(location: Location) {
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
