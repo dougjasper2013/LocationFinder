@@ -134,6 +134,89 @@ class MapActivity : AppCompatActivity() {
 
     private fun updateMapLocation(location: Location) {
 
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        statusText.text =
+            "Latitude: %6.f\nLongitude: %6.f"
+                .format(latitude, longitude)
+
+        val currentPosition =
+            GeoPoint(latitude, longitude)
+
+        if (locationMarker == null) {
+
+            locationMarker = Marker(mapView).apply {
+                position = currentPosition
+                title = "Current Location"
+
+                setAnchor(
+                    Marker.ANCHOR_CENTER,
+                    Marker.ANCHOR_BOTTOM
+                )
+            }
+
+            mapView.overlays.add(locationMarker)
+
+        }
+        else {
+
+            locationMarker?.position = currentPosition
+
+        }
+
+        if (firstLocation) {
+
+            mapView.controller.setZoom(10.0)
+
+            mapView.controller.setCenter(currentPosition)
+
+            firstLocation = false
+
+        }
+        else {
+            mapView.controller.animateTo(currentPosition)
+        }
+
+        mapView.invalidate()
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if ( requestCode == LOCATION_PERMISSION_REQUEST &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            startLocationUpdates()
+        }
+        else {
+            statusText.text =
+                "Location permission was denied."
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        fusedLocationClient.removeLocationUpdates(
+            locationCallback
+        )
+
+        mapView.onPause()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
