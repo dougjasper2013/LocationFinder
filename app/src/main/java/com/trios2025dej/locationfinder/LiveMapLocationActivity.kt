@@ -57,7 +57,73 @@ class LiveMapLocationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        MapLibre.getInstance(this)
+
         setContentView(R.layout.activity_live_map_location)
+
+        val toolbar =
+            findViewById<Toolbar>(R.id.toolbar)
+
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        latitudeText =
+            findViewById(R.id.latitudeText)
+
+        longitudeText =
+            findViewById(R.id.longitudeText)
+
+        addressText =
+            findViewById(R.id.addressText)
+
+        statusText =
+            findViewById(R.id.statusText)
+
+        mapView =
+            findViewById(R.id.mapView)
+
+        mapView.getMapAsync { map ->
+
+            maplibreMap = map
+
+            maplibreMap.setStyle(
+                "https://demotiles.maplibre.org/style.json"
+            ) {
+
+                mapIsReady = true
+
+                statusText.text =
+                    "Map ready. Waiting for location..."
+            }
+        }
+
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(this)
+
+        locationRequest =
+            LocationRequest.Builder(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                2000L
+            )
+                .setMinUpdateIntervalMillis(1000L)
+                .build()
+
+        locationCallback =
+            object : LocationCallback() {
+
+                override fun onLocationResult(
+                    locationResult: LocationResult
+                ) {
+
+                    for (location in locationResult.locations) {
+
+                        displayLocation(location)
+                    }
+                }
+            }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
