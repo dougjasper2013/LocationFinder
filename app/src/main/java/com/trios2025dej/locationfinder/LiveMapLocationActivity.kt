@@ -180,6 +180,268 @@ class LiveMapLocationActivity : AppCompatActivity() {
         mapView.onSaveInstanceState(outState)
     }
 
+    private fun startLocationUpdates() {
 
+        if (
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            Toast.makeText(
+                this,
+                "Location permission is required.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            mainLooper
+        )
+
+        statusText.text =
+            "Receiving live location updates..."
+    }
+
+    private fun stopLocationUpdates() {
+
+        fusedLocationClient.removeLocationUpdates(
+            locationCallback
+        )
+
+        statusText.text =
+            "Location updates stopped."
+    }
+
+    private fun displayLocation(
+        location: Location
+    ) {
+
+        val latitude =
+            location.latitude
+
+        val longitude =
+            location.longitude
+
+        latitudeText.text =
+            String.format(
+                Locale.US,
+                "Latitude: %.6f",
+                latitude
+            )
+
+        longitudeText.text =
+            String.format(
+                Locale.US,
+                "Longitude: %.6f",
+                longitude
+            )
+
+        getAddress(
+            latitude,
+            longitude
+        )
+
+        updateMapLocation(
+            latitude,
+            longitude
+        )
+
+        statusText.text =
+            "Location updated"
+    }
+
+    private fun updateMapLocation(
+        latitude: Double,
+        longitude: Double
+    ) {
+
+        /*
+         * Do nothing until the map and its style
+         * have finished loading.
+         */
+        if (!mapIsReady) {
+            return
+        }
+
+        val currentLatLng =
+            LatLng(
+                latitude,
+                longitude
+            )
+
+        /*
+         * If this is the first location, create
+         * the marker.
+         */
+        if (currentLocationMarker == null) {
+
+            currentLocationMarker =
+                maplibreMap.addMarker(
+                    MarkerOptions()
+                        .position(currentLatLng)
+                        .title("Current Location")
+                )
+
+            /*
+             * Zoom to the initial location.
+             */
+            maplibreMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    currentLatLng,
+                    16.0
+                )
+            )
+
+        } else {
+
+            /*
+             * Move the existing marker.
+             */
+            currentLocationMarker?.position =
+                currentLatLng
+
+            /*
+             * Redraw the marker in its new position.
+             */
+            maplibreMap.updateMarker(
+                currentLocationMarker!!
+            )
+
+            /*
+             * Move the map camera to follow
+             * the current location.
+             */
+            maplibreMap.animateCamera(
+                CameraUpdateFactory.newLatLng(
+                    currentLatLng
+                )
+            )
+        }
+    }
+
+    private fun getAddress(
+        latitude: Double,
+        longitude: Double
+    ) {
+
+        if (!Geocoder.isPresent()) {
+
+            addressText.text =
+                "Address lookup is not available on this device."
+
+            return
+        }
+
+        val geocoder =
+            Geocoder(
+                this,
+                Locale.getDefault()
+            )
+
+        if (
+            Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.TIRAMISU
+        ) {
+
+            /*
+             * Android 13 / API 33 and newer.
+             */
+            geocoder.getFromLocation(
+                latitude,
+                longitude,
+                1,
+                object : Geocoder.GeocodeListener {
+
+                    override fun onGeocode(
+                        addresses: MutableList<Address>
+                    ) {
+
+                        runOnUiThread {
+
+                            if (addresses.isNotEmpty()) {
+
+                                addressText.text =
+                                    addresses[0]
+                                        .getAddressLine(0)
+
+                            } else {
+
+                                addressText.text =
+                                    "No address found."
+                            }
+                        }
+                    }
+
+                    override fun onError(
+                        errorMessage: String?
+                    ) {
+
+                        runOnUiThread {
+
+                            addressText.text =
+                                "Unable to determine address."
+                        }
+                    }
+                }
+            )
+
+        } else {
+
+            /*
+             * Android 12 / API 32 and older.
+             */
+            Thread {
+
+                try {
+
+                    val addresses =
+                        geocoder.getFromLocation(
+                            latitude,
+                            longitude,
+                            1
+                        )
+
+                    runOnUiThread {
+
+                        if (
+                            !addresses.isNullOrEmpty()
+                        ) {
+
+                            addressText.text =
+                                addresses[0]
+                                    .getAddressLine(0)
+
+                        } else {
+
+                            addressText.text =
+                                "No address found."
+                        }
+                    }
+
+                } catch (e: Exception) {
+
+                    runOnUiThread {
+
+                        addressText.text =
+                            "Unable to determine address."
+                    }
+                }
+
+            }.start()
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+
+        onBackPressedDispatcher.onBackPressed()
+
+        return true
+    }
 
 }
