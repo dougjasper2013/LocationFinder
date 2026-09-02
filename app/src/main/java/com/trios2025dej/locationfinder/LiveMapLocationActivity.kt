@@ -294,7 +294,7 @@ class LiveMapLocationActivity : AppCompatActivity() {
             maplibreMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     currentLatLng,
-                    16.0
+                    5.0
                 )
             )
 

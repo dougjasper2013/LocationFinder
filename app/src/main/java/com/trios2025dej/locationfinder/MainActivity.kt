@@ -121,6 +121,19 @@ class MainActivity : AppCompatActivity() {
                 true
             }
 
+            R.id.action_live_map_location -> {
+
+                val intent =
+                    Intent(
+                        this,
+                        LiveMapLocationActivity::class.java
+                    )
+
+                startActivity(intent)
+
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

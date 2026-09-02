@@ -14,7 +14,12 @@
 
     <item
         android:id="@+id/action_map"
-        android:title="Map"
+        android:title="Map (OSMDroid)"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_live_map_location"
+        android:title="Live Map Location (MapLibre)"
         app:showAsAction="never" />
 
 </menu>
