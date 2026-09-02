@@ -138,7 +138,7 @@ class MapActivity : AppCompatActivity() {
         val longitude = location.longitude
 
         statusText.text =
-            "Latitude: %6.f\nLongitude: %6.f"
+            "Latitude: %.6f\nLongitude: %.6f"
                 .format(latitude, longitude)
 
         val currentPosition =
@@ -167,7 +167,7 @@ class MapActivity : AppCompatActivity() {
 
         if (firstLocation) {
 
-            mapView.controller.setZoom(10.0)
+            mapView.controller.setZoom(15.0)
 
             mapView.controller.setCenter(currentPosition)
 

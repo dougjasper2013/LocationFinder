@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.play.services.location)
     implementation(libs.osmdroid.android)
+    implementation(libs.maplibre.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
